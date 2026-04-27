@@ -1,37 +1,38 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+// import React from 'react';
+// import { NavigationContainer } from '@react-navigation/native';
+// import Navigate from './src/navigation/Navigate';
+
+// export default function App() {
+//   return (
+//     <NavigationContainer>
+//       <Navigate />
+//     </NavigationContainer>
+//   );
+// }
+
+import React, { useEffect, useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import LoginScreen from './src/screens/LoginScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
+import { configureGoogleSignIn } from './src/services/google';
+
+type Screen = 'login' | 'register';
 
 export default function App() {
-  return(
-    <View style={styles.container}>
-      <Text style={styles.title}>Hello World</Text>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Click Me</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f5f5f5",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
+    const [screen, setScreen] = useState<Screen>('login');
+
+    useEffect(() => {
+        configureGoogleSignIn(); 
+    }, []);
+
+    return (
+        <SafeAreaProvider>
+            {screen === 'login' ? (
+                <LoginScreen onNavigateRegister={() => setScreen('register')} />
+            ) : (
+                <RegisterScreen onNavigateLogin={() => setScreen('login')} />
+            )}
+        </SafeAreaProvider>
+    );
+  }
+  
